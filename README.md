@@ -1,4 +1,4 @@
-# @fleur/mordred
+# 🌹 @fleur/mordred 🌹
 
 `Mordred (モードレッド)` is Perfect React Modal library at 2021.
 
