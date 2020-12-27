@@ -1,0 +1,23 @@
+{
+  "name": "mordred-example",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "Hanakla <hanakla.dev@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "parcel serve -d ./dist ./index.html"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@types/dedent": "^0.7.0",
+    "parcel": "^1.12.4"
+  },
+  "dependencies": {
+    "dedent": "^0.7.0",
+    "domready": "^1.0.8",
+    "react": "17",
+    "react-dom": "17",
+    "react-spring": "^8.0.27"
+  }
+}

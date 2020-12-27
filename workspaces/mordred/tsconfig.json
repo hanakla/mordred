@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "files": ["src/index.ts"],
+  "exclude": ["src/**/*.spec.ts", "test_lib/"]
+}
