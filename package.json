@@ -13,6 +13,7 @@
   "scripts": {
     "start:example": "wsrun --no-prefix -p mordred-example -c start",
     "start:watch": "wsrun --no-prefix -m build:esm -w",
+    "sync:readme": "cp ./README.md ./workspaces/mordred/",
     "build": "wsrun -m build"
   },
   "devDependencies": {
