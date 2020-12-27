@@ -6,8 +6,14 @@ export default {
   plugins: {
     typescript2: typescript(),
   },
+  externals: ["react", "react-dom"],
   bundleNodeModules: ["tslib"],
+  globals: {
+    react: "React",
+    "react-dom": "ReactDOM",
+  },
   output: {
-    format: ["cjs", "esm"],
+    moduleName: "Mordred",
+    format: ["cjs", "esm", "umd-min"],
   },
 } as Config;
