@@ -1,20 +1,55 @@
 # @fleur/mordred
 
-`Mordred (モードレッド)` is Perfect React Modal library.
+`Mordred (モードレッド)` is Perfect React Modal library at 2021.
 
+## Features
+
+- Both of JSX style and imperative style
+  - Callable from out of React (likes Action creator)
+- Can be connect to another React context likes Redux store from Modal
+- Supports backdrop animation
+- Tuned rerendering region / performance
 - SSR ready (module is importable in server side)
   - Really works only client side
-- Both of JSX style and imperative style
-- Can be connect to another React context likes Redux store from Modal
 - Type safe
 
 ## Usage
 
+See full example code (with single backdrop fade) in [this example](https://github.com/fleur-js/mordred/blob/main/workspaces/example)
+
+### Setup
+
+Add `MordredRoot` into your App root and call `Mordred.init` on after domready
+
 ```tsx
-import { openModal, ModalComponent } from '@fleur/mordred'
+import domready from 'domready'
+import { Mordret, MordredRoot } from '@fleur/mordred'
+
+const App = () => {
+  return (
+    <div>
+      <MordredRoot>
+        {({ children }) => (
+          <YourBackdrop>{children}</YourBackdrop>
+        )}
+      </MordredRoot>
+    </div>
+  )
+}
+
+domready(() => {
+  Mordret.init()
+  ReactDOM.render(<App />, yourRootElement)
+})
+```
+
+And define and call ModalComponet to use it up!
+
+```tsx
+import { MordredRoot, ModalComponentType } from '@fleur/mordred'
 
 // jsx style
-const ConfirmModal: ModalComponent<{ message: string }, boolean> = ({ onClose }) => (
+const ConfirmModal: ModalComponentType<{ message: string }, boolean> = ({ onClose }) => (
   <div>
     {message}
     <button onClick={() => onClose(false)}>Cancel</button>
@@ -22,27 +57,20 @@ const ConfirmModal: ModalComponent<{ message: string }, boolean> = ({ onClose })
   </div>
 )
 
-const App = () => {
+const SomePage = () => {
   const [isOpened, setIsOpen] = useState(false)
   const handleClose = (result) => console.log(result)
 
   return (
-    <div id="app-root">
+    <div>
       <Modal>
         <ConfirmModal isOpen={isOpened} onClose={handleClose} message='Sleep?' />
       </Modal>
-
-      {/* Add `MordredRoot` in your app root */}
-      <MordredRoot>
-        {({ children, entries }) => (
-          <Backdrop visible={entries.length > 0}>{children}</Backdrop>
-        )}
-      </MordredRoot>
     </div>
   )
 }
 
 // imperative style
+import { openModal } from '@fleur/mordred'
 const result = await openModal(ConfirmModal, { message: 'Godmode?' })
-
 ```
