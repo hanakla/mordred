@@ -43,6 +43,8 @@ domready(() => {
 })
 ```
 
+### Calling your Modal
+
 And define and call ModalComponet to use it up!
 
 ```tsx
