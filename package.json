@@ -44,6 +44,10 @@
     }
   },
   "lint-staged": {
+    "README.md": [
+      "yarn sync:readme",
+      "git add"
+    ],
     "*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write",
