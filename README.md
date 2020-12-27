@@ -4,6 +4,8 @@
 
 ## Features
 
+- No dependency on libraries other than React
+  - Can use with Fleur, Redux or another React library
 - Both of JSX style and imperative style
   - Callable from out of React (likes Action creator)
 - Can be connect to another React context likes Redux store from Modal
