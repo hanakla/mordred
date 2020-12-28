@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { IS_SERVER } from "../utils";
 
 type MordalRenderer =
   | ReactNode
@@ -34,7 +35,7 @@ export const MordredRoot = ({
     return () => context.unobserve(rerender);
   }, [rerender]);
 
-  if (!mounted || !context.rootElement) {
+  if (IS_SERVER || !mounted || !context.rootElement) {
     return <></>;
   }
 
