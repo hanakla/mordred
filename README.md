@@ -4,7 +4,7 @@
 
 ## Features
 
-- Have *not* any appearance
+- Have **not** any appearance
   - Mordred manages modal state and positioner element only, design modal your self!
 - Better accessibility
   - Auto scroll lock when modal appearered
