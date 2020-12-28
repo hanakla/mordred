@@ -15,6 +15,7 @@
     "build:declarations": "tsc --emitDeclarationOnly --declaration --outDir ./dist",
     "build:esm": "bili",
     "build": "yarn build:declarations && yarn build:esm",
+    "start": "bili -w",
     "prepublishOnly": "yarn clean-dist && yarn build"
   },
   "devDependencies": {
