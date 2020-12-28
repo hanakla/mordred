@@ -70,7 +70,7 @@ export class Mordred {
       div.className = "mordred-context";
 
       Object.assign(div.style, {
-        position: "absolute",
+        position: "fixed",
         top: 0,
         left: 0,
         zIndex: options.zIndex ?? Number.MAX_SAFE_INTEGER,
