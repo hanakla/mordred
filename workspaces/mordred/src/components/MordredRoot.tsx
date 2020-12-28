@@ -2,8 +2,10 @@ import { Mordred, MordredEntry } from "../Mordred";
 import React, {
   Fragment,
   ReactNode,
+  useCallback,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -24,18 +26,34 @@ export const MordredRoot = ({
 }) => {
   const [mounted, setMounted] = useState(false);
   const [, rerender] = useReducer((s) => s + 1, 0);
+  const styleRef = useRef<HTMLStyleElement | null>(null);
 
-  const context = Mordred.instance;
-  const entries = context.activeEntries;
+  const { instance } = Mordred;
+  const entries = instance.activeEntries;
+
+  const onUpdate = useCallback(() => {
+    if (instance.activeEntries.length > 0 && styleRef.current == null) {
+      const style = (styleRef.current = document.createElement("style"));
+      style.textContent = "body { overflow: hidden /* Lock by Mordred */; }";
+      document.head.appendChild(style);
+    }
+
+    if (instance.activeEntries.length === 0 && styleRef.current != null) {
+      styleRef.current.remove();
+      styleRef.current = null;
+    }
+
+    rerender();
+  }, []);
 
   useEffect(() => {
     setMounted(true);
 
-    context.observe(rerender);
-    return () => context.unobserve(rerender);
-  }, [rerender]);
+    instance.observe(onUpdate);
+    return () => instance.unobserve(onUpdate);
+  }, []);
 
-  if (IS_SERVER || !mounted || !context.rootElement) {
+  if (IS_SERVER || !mounted || !instance.rootElement) {
     return <></>;
   }
 
@@ -59,7 +77,7 @@ export const MordredRoot = ({
   }
 
   if (children !== null) {
-    return <>{createPortal(children, context.rootElement)}</>;
+    return <>{createPortal(children, instance.rootElement)}</>;
   }
 
   return (
@@ -70,7 +88,7 @@ export const MordredRoot = ({
             <Fragment key={entry.key}>{entry.element}</Fragment>
           ))}
         </>,
-        context.rootElement
+        instance.rootElement
       )}
     </>
   );
