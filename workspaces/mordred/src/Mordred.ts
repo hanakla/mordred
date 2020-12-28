@@ -93,7 +93,7 @@ export class Mordred {
     const entry = new MordredEntry(
       key,
       option,
-      () => this.observer.forEach((o) => o()),
+      () => this.dispatchUpdate(),
       (entry) => this.destroyModal(entry.key)
     );
 
