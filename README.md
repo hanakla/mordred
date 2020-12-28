@@ -4,16 +4,21 @@
 
 ## Features
 
-- No dependency on libraries other than React
-  - Can use with Fleur, Redux or another React library
-- Both of JSX style and imperative style
+- Have *not* any appearance
+  - Mordred manages modal state and positioner element only, design modal your self!
+- Better accessibility
+  - Auto scroll lock when modal appearered
+  - Limit focus  only inside on Modal when modal appearered, with [`focus-trap`](https://github.com/focus-trap/focus-trap)
+- Both of `JSX style` and `imperative style`
   - Callable from out of React (likes Action creator)
-- Can be connect to another React context likes Redux store from Modal
+  - Can be connect to another React context likes Redux store from Modal (of course imperative style too)
 - Supports backdrop animation
-- Tuned rerendering region / performance
+  - Do it yourself, with react-spring
+- Tuned re-rendering region / performance
 - SSR ready (module is importable in server side)
   - Really works only client side
 - Type safe
+  - Modal result can be type
 
 ## Usage
 
