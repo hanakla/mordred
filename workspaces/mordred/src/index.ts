@@ -2,7 +2,8 @@ export { Mordred, MordredEntry } from "./Mordred";
 export {
   ResultOfModal,
   ModalComponentType,
-  openModal,
+  unrecommended_openModal,
+  useModalOpener,
   useModalsQueue,
 } from "./react-bind";
 export { Modal } from "./components/Modal";

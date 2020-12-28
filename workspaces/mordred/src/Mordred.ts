@@ -44,11 +44,20 @@ interface Options {
 }
 
 export class Mordred {
-  public static instance: Mordred;
+  public static _instance: Mordred;
+
+  public static get instance() {
+    if (!Mordred._instance) {
+      throw new Error(
+        "Mordred: Mordred is not initialized, Please call `Mordred.init` first"
+      );
+    }
+    return Mordred._instance;
+  }
 
   public static init(options: Options = {}) {
     if (Mordred.instance) throw new Error("Mordred is already initialized");
-    Mordred.instance = new Mordred(options);
+    Mordred._instance = new Mordred(options);
   }
 
   public rootElement: HTMLElement | null = null;
@@ -88,18 +97,18 @@ export class Mordred {
     }
   }
 
-  public openModal(option: MordredEntryOption) {
+  public openModal(option: Omit<MordredEntryOption, "key">) {
     if (IS_SERVER) {
       throw new Error(
         "Mordred: Can't open modal in Server side, please move openModal inside useEffect or componentDidMount"
       );
     }
 
-    const key = option.key ?? createKey();
+    const key = createKey();
 
     const entry = new MordredEntry(
       key,
-      option,
+      { key, ...option },
       () => this.dispatchUpdate(),
       (entry) => this.destroyModal(entry.key)
     );

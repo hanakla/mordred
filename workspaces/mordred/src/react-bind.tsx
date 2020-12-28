@@ -8,7 +8,7 @@ import React, {
   useRef,
 } from "react";
 import { Mordred } from "./Mordred";
-import { createKey } from "./utils";
+import { IS_SERVER } from "./utils";
 
 export type ModalProps<Props = unknown, T = any> = {
   isOpen?: boolean;
@@ -35,25 +35,39 @@ export type PropsTypeOf<T extends ComponentType<any>> = T extends ComponentType<
   ? R
   : never;
 
-export const openModal = async <C extends ModalComponentType<any, any>>(
+/**
+ * Stable API.
+ *
+ * But use it "anyplace" in your application makes very complex Modal state.
+ * (Maybe, can't keep "Single modal same time". It's not so good UX.)
+ * Recommended, `useModalOpener` and pass it returned function to ActionCreator instead.
+ */
+export const unrecommended_openModal = async <
+  C extends ModalComponentType<any, any>
+>(
   Component: C,
   props: Omit<PropsTypeOf<C>, "onClose" | "isOpen">,
-  { abort }: { abort?: AbortSignal } = {}
+  { signal }: { signal?: AbortSignal } = {}
 ) => {
-  return new Promise<ResultOfModal<C>>((resolve) => {
+  return new Promise<ResultOfModal<C> | void>((resolve) => {
+    const handleAbort = () => {
+      entry.close();
+      resolve(void 0);
+    };
+
     const entry = Mordred.instance.openModal({
-      key: createKey(),
       clickBackdropToClose: !!props.clickBackdropToClose,
       element: createElement(Component, {
         ...props,
         onClose: (result: ResultOfModal<C>) => {
           resolve(result);
+          signal?.removeEventListener("abort", handleAbort);
           entry.close();
         },
       }),
     });
 
-    abort?.addEventListener("abort", entry.close);
+    signal?.addEventListener("abort", handleAbort);
   });
 };
 
@@ -78,4 +92,41 @@ export const useModalsQueue = () => {
     modalElements: elements.current,
     modalEntries: Mordred.instance.activeEntries,
   };
+};
+
+/**
+ * Use `openModal` function in React.
+
+ * Modals mounted by these hooks will be closed when the component is unmounted.
+ */
+export const useModalOpener = () => {
+  const aborts = useRef<AbortController[]>([]);
+
+  const modalOpener = useCallback<typeof unrecommended_openModal>(
+    (Component, props, { signal } = {}) => {
+      // Will use AbortController, however AbortController is not available in server side. Let guard.
+      if (IS_SERVER) {
+        throw new Error(
+          "Mordred: Can't open modal in Server side, please move openModal inside useEffect or componentDidMount"
+        );
+      }
+
+      const controller = new AbortController();
+      signal?.addEventListener("abort", controller.abort);
+
+      const entry = unrecommended_openModal(Component, props, {
+        signal: controller.signal,
+      });
+
+      aborts.current.push(controller);
+      return entry;
+    },
+    []
+  );
+
+  useEffect(() => {
+    return () => aborts.current.forEach((controller) => controller.abort());
+  }, []);
+
+  return { openModal: modalOpener };
 };
