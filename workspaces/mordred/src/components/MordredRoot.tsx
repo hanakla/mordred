@@ -42,15 +42,18 @@ export const MordredRoot = ({
   if (typeof children === "function") {
     return (
       <>
-        {entries.map((entry) => (
-          <Fragment key={entry.key}>
-            {children({
-              children: entry.element,
-              entry,
-              closeCurrent: () => entry.close(),
-            })}
-          </Fragment>
-        ))}
+        {createPortal(
+          entries.map((entry) => (
+            <Fragment key={entry.key}>
+              {children({
+                children: entry.element,
+                entry,
+                closeCurrent: () => entry.close(),
+              })}
+            </Fragment>
+          )),
+          Mordred.instance.rootElement!
+        )}
       </>
     );
   }
