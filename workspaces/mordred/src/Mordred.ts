@@ -160,6 +160,8 @@ export class Mordred {
   }
 
   private dispatchUpdate() {
+    if (IS_SERVER) return;
+
     this.recache();
     this.observer.forEach((observer) => observer());
   }
