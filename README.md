@@ -12,11 +12,12 @@
 - Both of `JSX style` and `imperative style`
   - Callable from out of React (likes Action creator)
   - Can be connect to another React context likes Redux store from Modal (of course imperative style too)
-- Supports backdrop animation
-  - Do it yourself, with react-spring
-- Tuned re-rendering region / performance
-- SSR ready (module is importable in server side)
+- Abortable (with `AbortController`)
+- Sever-side ready (module is **import safe** in server side)
   - Really works only client side
+- Supports backdrop animation
+  - Tune it yourself, with react-spring
+- Tuned re-rendering region / performance
 - Type safe
   - Modal result can be type
 
