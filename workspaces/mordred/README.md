@@ -26,20 +26,20 @@ See full example code (with single backdrop fade) in [this example](https://gith
 
 ### Setup
 
-Add `MordredRoot` into your App root and call `Mordred.init` on after domready
+Add `MordredRenderer` into your App root and call `Mordred.init` on after domready
 
 ```tsx
 import domready from 'domready'
-import { Mordret, MordredRoot } from '@fleur/mordred'
+import { Mordret, MordredRenderer } from '@fleur/mordred'
 
 const App = () => {
   return (
     <div>
-      <MordredRoot>
+      <MordredRenderer>
         {({ children }) => (
           <YourBackdrop>{children}</YourBackdrop>
         )}
-      </MordredRoot>
+      </MordredRenderer>
     </div>
   )
 }
@@ -55,7 +55,7 @@ domready(() => {
 And define and call ModalComponet to use it up!
 
 ```tsx
-import { MordredRoot, ModalComponentType } from '@fleur/mordred'
+import { MordredRenderer, ModalComponentType } from '@fleur/mordred'
 
 // jsx style
 const ConfirmModal: ModalComponentType<{ message: string }, boolean> = ({ onClose }) => (

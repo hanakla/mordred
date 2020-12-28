@@ -9,7 +9,7 @@ import {
   ResultOfModal,
   openModal,
   whenExactlyClickThen,
-  MordredRoot,
+  MordredRenderer,
 } from "@fleur/mordred";
 import dedent from "dedent";
 import { useModalsQueue } from "@fleur/mordred";
@@ -131,7 +131,7 @@ const App = () => {
 
         <div style={{ width: "100%", height: "40em" }} />
 
-        <MordredRoot>
+        <MordredRenderer>
           <Transition
             items={hasModal}
             native
@@ -148,7 +148,7 @@ const App = () => {
                 </Backdrop>
               )}
           </Transition>
-        </MordredRoot>
+        </MordredRenderer>
       </div>
     </TestContext.Provider>
   );

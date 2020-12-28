@@ -19,7 +19,7 @@ type MordalRenderer =
       closeCurrent: () => void;
     }) => ReactNode);
 
-export const MordredRoot = ({
+export const MordredRenderer = ({
   children = ({ children }) => children,
 }: {
   children?: MordalRenderer;

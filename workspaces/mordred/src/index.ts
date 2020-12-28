@@ -6,5 +6,5 @@ export {
   useModalsQueue,
 } from "./react-bind";
 export { Modal } from "./components/Modal";
-export { MordredRoot } from "./components/MordredRoot";
+export { MordredRenderer } from "./components/MordredRenderer";
 export { whenExactlyClickThen } from "./public-helpers";
