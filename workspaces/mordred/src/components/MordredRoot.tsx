@@ -36,11 +36,14 @@ export const MordredRoot = ({
       const style = (styleRef.current = document.createElement("style"));
       style.textContent = "body { overflow: hidden /* Lock by Mordred */; }";
       document.head.appendChild(style);
+      (document.activeElement as HTMLElement)?.blur();
+      instance.focusTrap?.activate();
     }
 
     if (instance.activeEntries.length === 0 && styleRef.current != null) {
       styleRef.current.remove();
       styleRef.current = null;
+      instance.focusTrap?.deactivate();
     }
 
     rerender();

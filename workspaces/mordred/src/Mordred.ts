@@ -1,3 +1,4 @@
+import { createFocusTrap, FocusTrap } from "focus-trap";
 import { ReactNode } from "react";
 import { createKey, IS_SERVER } from "./utils";
 
@@ -36,9 +37,10 @@ export class MordredEntry {
 }
 
 interface Options {
-  rootElement?: Element;
+  rootElement?: HTMLElement;
   zIndex?: number;
   allowMultipleModals?: boolean;
+  disableFocusTrap?: boolean;
 }
 
 export class Mordred {
@@ -49,7 +51,8 @@ export class Mordred {
     Mordred.instance = new Mordred(options);
   }
 
-  public rootElement: Element | null = null;
+  public rootElement: HTMLElement | null = null;
+  public focusTrap: FocusTrap | null = null;
   private modals: Map<string, MordredEntry> = new Map();
   private activeEntriesCache: MordredEntry[] = [];
   private options: Options;
@@ -79,6 +82,10 @@ export class Mordred {
 
       document.body.appendChild(div);
     }
+
+    if (!options.disableFocusTrap) {
+      this.initFocusTrap();
+    }
   }
 
   public openModal(option: MordredEntryOption) {
@@ -107,6 +114,16 @@ export class Mordred {
   public changeSetting(option: Partial<Omit<Options, "rootElement">>) {
     this.options.allowMultipleModals = !!option.allowMultipleModals;
     this.options.zIndex = option.zIndex;
+
+    if (this.options.disableFocusTrap && !option.disableFocusTrap) {
+      this.initFocusTrap();
+    }
+
+    if (!this.options.disableFocusTrap && option.disableFocusTrap) {
+      this.focusTrap?.deactivate();
+      this.focusTrap = null;
+    }
+
     this.dispatchUpdate();
   }
 
@@ -134,6 +151,12 @@ export class Mordred {
 
   public unobserve(listener: () => void) {
     this.observer.delete(listener);
+  }
+
+  private initFocusTrap() {
+    this.focusTrap = createFocusTrap(this.rootElement!, {
+      fallbackFocus: this.rootElement!,
+    });
   }
 
   private dispatchUpdate() {
