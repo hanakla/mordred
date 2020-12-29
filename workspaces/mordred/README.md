@@ -56,7 +56,7 @@ domready(() => {
 And define and call ModalComponet to use it up!
 
 ```tsx
-import { MordredRenderer, ModalComponentType } from '@fleur/mordred'
+import { MordredRenderer, ModalComponentType, useModalOpener } from '@fleur/mordred'
 
 // jsx style
 const ConfirmModal: ModalComponentType<{ message: string }, boolean> = ({ onClose }) => (
@@ -69,18 +69,22 @@ const ConfirmModal: ModalComponentType<{ message: string }, boolean> = ({ onClos
 
 const SomePage = () => {
   const [isOpened, setIsOpen] = useState(false)
+  const { openModal } = useModalOpener()
   const handleClose = (result) => console.log(result)
+
+  const handleClickGotoSleep = useCallback(() => {
+    const result = await openModal(ConfirmModal, { message: 'Sleep?' })
+  }, [])
 
   return (
     <div>
-      <Modal>
-        <ConfirmModal isOpen={isOpened} onClose={handleClose} message='Sleep?' />
-      </Modal>
+      <button onClick={handleClickGotoSleep}>Sleep</button>
     </div>
   )
 }
 
-// imperative style
-import { openModal } from '@fleur/mordred'
+// imperative style (Stable, but unrecommended)
+import { unrecommended_openModal } from '@fleur/mordred'
+
 const result = await openModal(ConfirmModal, { message: 'Godmode?' })
 ```
