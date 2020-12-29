@@ -56,7 +56,7 @@ export class Mordred {
   }
 
   public static init(options: Options = {}) {
-    if (Mordred.instance) throw new Error("Mordred is already initialized");
+    if (Mordred._instance) throw new Error("Mordred is already initialized");
     Mordred._instance = new Mordred(options);
   }
 
