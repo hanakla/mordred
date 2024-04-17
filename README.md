@@ -23,7 +23,7 @@
 
 ## Usage
 
-See full example code (with single backdrop fade) in [this example](https://github.com/fleur-js/mordred/blob/main/workspaces/example)
+See full example code (with single backdrop fade) in [this example](https://github.com/fleur-js/mordred/blob/main/pkgs/example)
 
 ### Setup
 

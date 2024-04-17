@@ -8,12 +8,12 @@
   "license": "MIT",
   "packageManager": "yarn@4.0.0-rc.38",
   "workspaces": [
-    "workspaces/*"
+    "pkgs/*"
   ],
   "scripts": {
     "start:example": "wsrun --no-prefix -p mordred-example -c start",
     "start:watch": "wsrun --no-prefix -m build:esm -w",
-    "sync:readme": "cp ./README.md ./workspaces/mordred/ && :",
+    "sync:readme": "cp ./README.md ./pkgs/mordred/ && :",
     "build": "wsrun -m build"
   },
   "devDependencies": {
@@ -46,7 +46,7 @@
   "lint-staged": {
     "README.md": [
       "yarn sync:readme",
-      "git add ./workspaces/mordred/README.md"
+      "git add ./pkgs/mordred/README.md"
     ],
     "*.{ts,tsx}": [
       "eslint --fix",
