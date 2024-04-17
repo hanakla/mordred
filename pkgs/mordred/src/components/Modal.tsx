@@ -46,24 +46,25 @@ export const Modal = <
 
     if (!rest.isOpen) return;
 
+    const Comp: ModalComponentType<ExtraProps> = component;
+    const element = (
+      <Comp
+        {...(props as ExtraProps)}
+        isOpen={rest.isOpen}
+        clickBackdropToClose={clickBackdropToClose}
+        onClose={handleClose as ModalPropsBase["onClose"]}
+      />
+    );
+
     if (entry.current) {
       entry.current.update({
-        element: rest.children,
-        clickBackdropToClose: clickBackdropToClose,
+        element,
+        clickBackdropToClose,
       });
     } else {
-      const Comp: ModalComponentType<ExtraProps> = component;
-
       entry.current = ModalManager.instance.openModal({
-        element: (
-          <Comp
-            {...(props as ExtraProps)}
-            isOpen={rest.isOpen}
-            children={rest.children}
-            clickBackdropToClose={clickBackdropToClose}
-            onClose={handleClose as ModalPropsBase["onClose"]}
-          />
-        ),
+        element,
+        clickBackdropToClose,
       });
     }
   }, [component, rest.isOpen, clickBackdropToClose]);

@@ -5,7 +5,6 @@ import { createKey, IS_SERVER } from "./utils";
 export type MordredEntryOption = {
   key?: string;
   element: ReactNode;
-  onAfterOpen?: () => void;
   clickBackdropToClose?: boolean;
   options?: any;
 };
@@ -84,14 +83,13 @@ export class ModalManager {
       this.rootElement = options.rootElement;
     } else {
       const div = (this.rootElement = document.createElement("div"));
-      div.className = "mordred-context";
+      div.className = "mordred-out";
       div.style.display = "contents";
       document.body.appendChild(div);
     }
 
-    if (!options.disableFocusTrap) {
-      this.initFocusTrap();
-    }
+    this.initFocusTrap();
+    this.focusTrap?.deactivate();
   }
 
   public openModal(option: Omit<MordredEntryOption, "key">) {

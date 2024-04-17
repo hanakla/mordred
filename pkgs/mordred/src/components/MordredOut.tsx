@@ -3,13 +3,12 @@ import React, {
   Fragment,
   ReactNode,
   useCallback,
-  useLayoutEffect,
   useReducer,
   useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { IS_SERVER } from "../utils";
+import { IS_SERVER, useIsomorphicLayoutEffect } from "../utils";
 
 type ModalRenderFn = (args: {
   children: ReactNode;
@@ -36,27 +35,27 @@ export const MordredOut = ({
   const activeEntries = instance?.activeEntries ?? [];
 
   const onUpdate = useCallback(() => {
-    if (!instance) return;
+    if (!mordredRef.current) return;
+
+    const activeEntries = mordredRef.current.activeEntries ?? [];
 
     if (activeEntries.length > 0 && styleRef.current == null) {
       const style = (styleRef.current = document.createElement("style"));
       style.textContent = "body { overflow: hidden /* Lock by Mordred */; }";
       document.head.appendChild(style);
-      instance.focusTrap?.activate();
+      mordredRef.current.focusTrap?.activate();
     }
 
     if (activeEntries.length === 0 && styleRef.current != null) {
       styleRef.current.remove();
       styleRef.current = null;
-      instance.focusTrap?.deactivate();
+      mordredRef.current.focusTrap?.deactivate();
     }
 
     rerender();
   }, []);
 
-  useLayoutEffect(() => {
-    setMounted(true);
-
+  useIsomorphicLayoutEffect(() => {
     ModalManager.init({
       allowMultipleModals,
       disableFocusTrap,
@@ -67,11 +66,13 @@ export const MordredOut = ({
     mordredRef.current = ModalManager.instance;
     ModalManager.observe(onUpdate);
 
+    setMounted(true);
+
     return () => ModalManager.unobserve(onUpdate);
   }, []);
 
-  useLayoutEffect(() => {
-    instance?.changeSetting({
+  useIsomorphicLayoutEffect(() => {
+    mordredRef.current?.changeSetting({
       allowMultipleModals: allowMultipleModals,
       disableFocusTrap: disableFocusTrap,
       zIndex: zIndex,

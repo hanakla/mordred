@@ -11,9 +11,8 @@ import { ModalManager } from "./ModalManager";
 import { IS_SERVER } from "./utils";
 
 export type ModalPropsBase<Props = unknown, T = any> = {
-  children?: ReactNode;
   clickBackdropToClose?: boolean;
-  onClose: [T] extends [void] ? () => void : (result: T) => void;
+  onClose: [T] extends [void] ? () => void : (result?: T) => void;
 } & Props;
 
 export type ModalComponentType<Props, Result = void> = ComponentType<
@@ -24,7 +23,7 @@ export type ModalComponentType<Props, Result = void> = ComponentType<
 export type ResultOfModal<
   T extends ModalComponentType<any, any>
 > =
-  T extends ModalComponentType<infer _, infer R> ? R | void
+  T extends ModalComponentType< infer _, infer R> ? R | void
   : never;
 
 export type PropsTypeOf<T extends ComponentType<any>> = T extends ComponentType<
@@ -44,7 +43,7 @@ export const unrecommended_openModal = async <
   C extends ModalComponentType<any, any>
 >(
   Component: C,
-  props: Omit<PropsTypeOf<C>, "onClose" | "isOpen">,
+  props: Omit<PropsTypeOf<C>, "onClose">,
   { signal }: { signal?: AbortSignal } = {}
 ) => {
   return new Promise<ResultOfModal<C> | void>((resolve) => {

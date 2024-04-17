@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 declare const Deno: any;
 
@@ -17,3 +17,7 @@ export const usePrevious = <T>(value: T) => {
 };
 
 export const createKey = () => Math.random().toString(36).substr(2, 8);
+
+export const useIsomorphicLayoutEffect = IS_SERVER
+  ? useEffect
+  : useLayoutEffect;

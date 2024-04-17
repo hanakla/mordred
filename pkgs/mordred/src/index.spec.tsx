@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { openModal, Modal, ModalComponentType } from "./";
 
 describe("Test", () => {
-  const ConfirmModal: ModalComponentType<unknown, boolean> = ({
+  const ConfirmModal: ModalComponentType<boolean, unknown> = ({
     children,
     onClose,
   }) => {
