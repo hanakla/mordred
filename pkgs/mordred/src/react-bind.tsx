@@ -7,19 +7,17 @@ import React, {
   useReducer,
   useRef,
 } from "react";
-import { Mordred } from "./Mordred";
+import { ModalManager } from "./ModalManager";
 import { IS_SERVER } from "./utils";
 
-export type ModalProps<Props = unknown, T = any> = {
-  isOpen?: boolean;
+export type ModalPropsBase<Props = unknown, T = any> = {
   children?: ReactNode;
   clickBackdropToClose?: boolean;
-  onAfterOpen?(): void;
   onClose: [T] extends [void] ? () => void : (result: T) => void;
 } & Props;
 
 export type ModalComponentType<Props, Result = void> = ComponentType<
-  ModalProps<Props, Result>
+  ModalPropsBase<Props, Result>
 >;
 
 // prettier-ignore
@@ -55,7 +53,7 @@ export const unrecommended_openModal = async <
       resolve(void 0);
     };
 
-    const entry = Mordred.instance.openModal({
+    const entry = ModalManager.instance.openModal({
       clickBackdropToClose: !!props.clickBackdropToClose,
       element: createElement(Component, {
         ...props,
@@ -77,20 +75,22 @@ export const useModalsQueue = () => {
 
   const update = useCallback(() => {
     elements.current = (
-      <>{Mordred.instance.activeEntries.map((entry) => entry.element)}</>
+      <>{ModalManager.instance.activeEntries.map((entry) => entry.element)}</>
     );
     rerender();
   }, []);
 
   useEffect(() => {
-    Mordred.instance.observe(update);
-    return () => Mordred.instance.unobserve(update);
+    ModalManager.observe(update);
+    return () => ModalManager.unobserve(update);
   }, [update]);
 
+  const instance = ModalManager._instance;
+
   return {
-    hasModal: Mordred.instance.activeEntries.length != 0,
+    hasModal: instance ? instance.activeEntries.length != 0 : false,
     modalElements: elements.current,
-    modalEntries: Mordred.instance.activeEntries,
+    modalEntries: instance ? instance.activeEntries : [],
   };
 };
 

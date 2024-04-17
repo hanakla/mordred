@@ -1,9 +1,8 @@
-import { Mordred, MordredEntry, MordredOptions } from "../Mordred";
+import { ModalManager, ModalEntry, ModalManagerOptions } from "../ModalManager";
 import React, {
   Fragment,
   ReactNode,
   useCallback,
-  useEffect,
   useLayoutEffect,
   useReducer,
   useRef,
@@ -14,11 +13,11 @@ import { IS_SERVER } from "../utils";
 
 type ModalRenderFn = (args: {
   children: ReactNode;
-  entry: MordredEntry;
+  entry: ModalEntry;
   closeCurrent: () => void;
 }) => ReactNode;
 
-export const MordredProvider = ({
+export const MordredOut = ({
   children = ({ children }) => children,
   allowMultipleModals,
   disableFocusTrap,
@@ -26,8 +25,8 @@ export const MordredProvider = ({
   zIndex,
 }: {
   children?: ModalRenderFn;
-} & MordredOptions) => {
-  const mordredRef = useRef<Mordred | null>(null);
+} & ModalManagerOptions) => {
+  const mordredRef = useRef<ModalManager | null>(null);
   const instance = mordredRef.current;
 
   const [mounted, setMounted] = useState(false);
@@ -55,20 +54,20 @@ export const MordredProvider = ({
     rerender();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMounted(true);
 
-    Mordred.init({
+    ModalManager.init({
       allowMultipleModals,
       disableFocusTrap,
       rootElement,
       zIndex,
     });
 
-    const instance = (mordredRef.current = Mordred.instance);
-    Mordred.instance.observe(onUpdate);
+    mordredRef.current = ModalManager.instance;
+    ModalManager.observe(onUpdate);
 
-    return () => instance.unobserve(onUpdate);
+    return () => ModalManager.unobserve(onUpdate);
   }, []);
 
   useLayoutEffect(() => {
@@ -96,7 +95,20 @@ export const MordredProvider = ({
               })}
             </Fragment>
           )),
-          Mordred.instance.rootElement!
+          instance.rootElement
+        )}
+      </>
+    );
+  }
+
+  if (children) {
+    return (
+      <>
+        {createPortal(
+          activeEntries.map((entry) => (
+            <Fragment key={entry.key}>{children}</Fragment>
+          )),
+          instance.rootElement
         )}
       </>
     );

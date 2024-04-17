@@ -10,12 +10,12 @@ export type MordredEntryOption = {
   options?: any;
 };
 
-export class MordredEntry {
+export class ModalEntry {
   constructor(
     public readonly key: string,
     private options: MordredEntryOption,
     private updated: () => void,
-    private destroyed: (entry: MordredEntry) => void
+    private destroyed: (entry: ModalEntry) => void
   ) {}
 
   public get element() {
@@ -36,38 +36,46 @@ export class MordredEntry {
   }
 }
 
-export interface MordredOptions {
+export interface ModalManagerOptions {
   rootElement?: HTMLElement;
   zIndex?: number;
   allowMultipleModals?: boolean;
   disableFocusTrap?: boolean;
 }
 
-export class Mordred {
-  public static _instance: Mordred;
+export class ModalManager {
+  public static _instance: ModalManager;
+  private static observer: Set<() => void> = new Set();
+
+  public static observe(listener: () => void) {
+    this.observer.add(listener);
+  }
+
+  public static unobserve(listener: () => void) {
+    this.observer.delete(listener);
+  }
 
   public static get instance() {
-    if (!Mordred._instance) {
+    if (!ModalManager._instance) {
       throw new Error(
         "Mordred: Mordred is not initialized, Please call `Mordred.init` first"
       );
     }
-    return Mordred._instance;
+    return ModalManager._instance;
   }
 
-  public static init(options: MordredOptions = {}) {
-    if (Mordred._instance) return;
-    Mordred._instance = new Mordred(options);
+  public static init(options: ModalManagerOptions = {}) {
+    if (ModalManager._instance) return;
+    ModalManager._instance = new ModalManager(options);
   }
 
   public rootElement: HTMLElement | null = null;
   public focusTrap: FocusTrap | null = null;
-  private modals: Map<string, MordredEntry> = new Map();
-  private activeEntriesCache: MordredEntry[] = [];
-  private options: MordredOptions;
-  private observer: Set<() => void> = new Set();
+  private modals: Map<string, ModalEntry> = new Map();
+  private activeEntriesCache: ModalEntry[] = [];
+  private options: ModalManagerOptions;
 
-  constructor(options: MordredOptions = {}) {
+  constructor(options: ModalManagerOptions = {}) {
     this.options = options;
 
     if (IS_SERVER) return;
@@ -95,7 +103,7 @@ export class Mordred {
 
     const key = createKey();
 
-    const entry = new MordredEntry(
+    const entry = new ModalEntry(
       key,
       { key, ...option },
       () => this.dispatchUpdate(),
@@ -109,7 +117,9 @@ export class Mordred {
     return entry;
   }
 
-  public changeSetting(option: Partial<Omit<MordredOptions, "rootElement">>) {
+  public changeSetting(
+    option: Partial<Omit<ModalManagerOptions, "rootElement">>
+  ) {
     this.options.allowMultipleModals = !!option.allowMultipleModals;
     this.options.zIndex = option.zIndex;
 
@@ -146,14 +156,6 @@ export class Mordred {
     return this.activeEntriesCache;
   }
 
-  public observe(listener: () => void) {
-    this.observer.add(listener);
-  }
-
-  public unobserve(listener: () => void) {
-    this.observer.delete(listener);
-  }
-
   private initFocusTrap() {
     this.focusTrap = createFocusTrap(this.rootElement!, {
       fallbackFocus: this.rootElement!,
@@ -164,6 +166,6 @@ export class Mordred {
     if (IS_SERVER) return;
 
     this.recache();
-    this.observer.forEach((observer) => observer());
+    ModalManager.observer.forEach((observer) => observer());
   }
 }

@@ -8,13 +8,13 @@ import React, {
 } from "react";
 import ReactDOM from "react-dom";
 import {
-  Mordred,
+  ModalManager,
   MordredEntry,
   Modal,
   ModalComponentType,
   ResultOfModal,
   unrecommended_openModal,
-  MordredProvider,
+  MordredOut,
   isEqualElement,
 } from "@fleur/mordred";
 import dedent from "dedent";
@@ -47,7 +47,7 @@ const App = () => {
   );
 
   const handleClickOpenMultiple = useCallback(() => {
-    Mordred.instance.changeSetting({ allowMultipleModals: true });
+    ModalManager.instance.changeSetting({ allowMultipleModals: true });
 
     unrecommended_openModal(AlertModal, { message: "1" });
     unrecommended_openModal(AlertModal, { message: "2" });
@@ -55,7 +55,7 @@ const App = () => {
   }, []);
 
   const handleClickOpenMultipleEach = useCallback(() => {
-    Mordred.instance.changeSetting({ allowMultipleModals: false });
+    ModalManager.instance.changeSetting({ allowMultipleModals: false });
 
     unrecommended_openModal(AlertModal, { message: "1" });
     unrecommended_openModal(AlertModal, { message: "2" });
@@ -103,7 +103,7 @@ const App = () => {
         </div>
         <Code>
           {dedent`
-            Mordred.instance.changeSetting({ allowMultipleModals: true });
+            ModalManager.instance.changeSetting({ allowMultipleModals: true });
 
             openModal(AlertModal, { message: "1" });
             openModal(AlertModal, { message: "2" });
@@ -118,7 +118,7 @@ const App = () => {
         </div>
         <Code>
           {dedent`
-            Mordred.instance.changeSetting({ allowMultipleModals: false });
+            ModalManager.instance.changeSetting({ allowMultipleModals: false });
 
             openModal(AlertModal, { message: "1" });
             openModal(AlertModal, { message: "2" });
@@ -136,7 +136,7 @@ const App = () => {
 
         <div style={{ width: "100%", height: "40em" }} />
 
-        <MordredProvider>
+        <MordredOut>
           <Transition
             items={hasModal}
             native
@@ -153,7 +153,7 @@ const App = () => {
                 </Backdrop>
               )}
           </Transition>
-        </MordredProvider>
+        </MordredOut>
       </div>
     </TestContext.Provider>
   );

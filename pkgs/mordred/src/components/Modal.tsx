@@ -1,30 +1,31 @@
-import React, { useCallback, useLayoutEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   ModalComponentType,
   PropsTypeOf,
-  ModalProps,
+  ModalPropsBase,
   ResultOfModal,
 } from "../react-bind";
-import { Mordred, MordredEntry } from "../Mordred";
+import { ModalManager, ModalEntry } from "../ModalManager";
 import { usePrevious } from "../utils";
 
 export const Modal = <
   C extends ModalComponentType<any, any>,
-  ExtraProps extends Omit<PropsTypeOf<C>, keyof ModalProps>
+  ExtraProps extends Omit<PropsTypeOf<C>, keyof ModalPropsBase>
 >({
   component,
   props,
   clickBackdropToClose = true,
   ...rest
-}: ModalProps<
+}: ModalPropsBase<
   {
     component: C;
     props: ExtraProps;
+    isOpen?: boolean;
   },
   ResultOfModal<C>
 >) => {
   const prevIsOpen = usePrevious(rest.isOpen);
-  const entry = useRef<MordredEntry | null>(null);
+  const entry = useRef<ModalEntry | null>(null);
 
   const handleClose = useCallback(
     (result: any) => {
@@ -34,7 +35,7 @@ export const Modal = <
     [rest.onClose]
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (prevIsOpen.previous !== rest.isOpen) {
       // Change to close
       if (rest.isOpen == false) {
@@ -48,21 +49,19 @@ export const Modal = <
     if (entry.current) {
       entry.current.update({
         element: rest.children,
-        onAfterOpen: rest.onAfterOpen,
         clickBackdropToClose: clickBackdropToClose,
       });
     } else {
       const Comp: ModalComponentType<ExtraProps> = component;
 
-      entry.current = Mordred.instance.openModal({
+      entry.current = ModalManager.instance.openModal({
         element: (
           <Comp
             {...(props as ExtraProps)}
             isOpen={rest.isOpen}
             children={rest.children}
-            onAfterOpen={rest.onAfterOpen}
             clickBackdropToClose={clickBackdropToClose}
-            onClose={handleClose as ModalProps["onClose"]}
+            onClose={handleClose as ModalPropsBase["onClose"]}
           />
         ),
       });

@@ -1,4 +1,4 @@
-export { Mordred, MordredEntry } from "./Mordred";
+export { ModalManager, ModalEntry as MordredEntry } from "./ModalManager";
 export {
   ResultOfModal,
   ModalComponentType,
@@ -7,5 +7,5 @@ export {
   useModalsQueue,
 } from "./react-bind";
 export { Modal } from "./components/Modal";
-export { MordredProvider } from "./components/MordredProvider";
+export { MordredOut } from "./components/MordredOut";
 export { isEqualElement } from "./public-helpers";
