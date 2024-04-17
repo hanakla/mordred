@@ -112,7 +112,7 @@ export const useModalOpener = () => {
       }
 
       const controller = new AbortController();
-      signal?.addEventListener("abort", controller.abort);
+      signal?.addEventListener("abort", () => controller.abort());
 
       const entry = unrecommended_openModal(Component, props, {
         signal: controller.signal,

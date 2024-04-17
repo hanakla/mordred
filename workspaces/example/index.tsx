@@ -7,7 +7,7 @@ import {
   Modal,
   ModalComponentType,
   ResultOfModal,
-  openModal,
+  unrecommended_openModal,
   whenExactlyClickThen,
   MordredRenderer,
 } from "@fleur/mordred";

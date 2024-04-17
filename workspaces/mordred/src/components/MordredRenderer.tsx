@@ -36,7 +36,6 @@ export const MordredRenderer = ({
       const style = (styleRef.current = document.createElement("style"));
       style.textContent = "body { overflow: hidden /* Lock by Mordred */; }";
       document.head.appendChild(style);
-      (document.activeElement as HTMLElement)?.blur();
       instance.focusTrap?.activate();
     }
 
