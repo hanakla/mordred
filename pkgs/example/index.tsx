@@ -1,5 +1,11 @@
 import domready from "domready";
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, {
+  MouseEvent,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 import ReactDOM from "react-dom";
 import {
   Mordred,
@@ -8,8 +14,8 @@ import {
   ModalComponentType,
   ResultOfModal,
   unrecommended_openModal,
-  whenExactlyClickThen,
-  MordredRenderer,
+  MordredProvider,
+  isEqualElement,
 } from "@fleur/mordred";
 import dedent from "dedent";
 import { useModalsQueue } from "@fleur/mordred";
@@ -32,7 +38,7 @@ const App = () => {
 
   const handleClose = useCallback(
     (result: ResultOfModal<typeof ConfirmModal>) => {
-      openModal(AlertModal, {
+      unrecommended_openModal(AlertModal, {
         message: `Result is ${result}`,
         clickBackdropToClose: true,
       });
@@ -44,17 +50,17 @@ const App = () => {
   const handleClickOpenMultiple = useCallback(() => {
     Mordred.instance.changeSetting({ allowMultipleModals: true });
 
-    openModal(AlertModal, { message: "1" });
-    openModal(AlertModal, { message: "2" });
-    openModal(AlertModal, { message: "3" });
+    unrecommended_openModal(AlertModal, { message: "1" });
+    unrecommended_openModal(AlertModal, { message: "2" });
+    unrecommended_openModal(AlertModal, { message: "3" });
   }, []);
 
   const handleClickOpenMultipleEach = useCallback(() => {
     Mordred.instance.changeSetting({ allowMultipleModals: false });
 
-    openModal(AlertModal, { message: "1" });
-    openModal(AlertModal, { message: "2" });
-    openModal(AlertModal, { message: "3" });
+    unrecommended_openModal(AlertModal, { message: "1" });
+    unrecommended_openModal(AlertModal, { message: "2" });
+    unrecommended_openModal(AlertModal, { message: "3" });
   }, []);
 
   return (
@@ -131,7 +137,7 @@ const App = () => {
 
         <div style={{ width: "100%", height: "40em" }} />
 
-        <MordredRenderer>
+        <MordredProvider>
           <Transition
             items={hasModal}
             native
@@ -148,7 +154,7 @@ const App = () => {
                 </Backdrop>
               )}
           </Transition>
-        </MordredRenderer>
+        </MordredProvider>
       </div>
     </TestContext.Provider>
   );
@@ -177,9 +183,10 @@ const Backdrop: React.FC<{
 
 const BackdropClickHandle = ({ entry }: { entry: MordredEntry }) => {
   const handleClick = useCallback(
-    whenExactlyClickThen(() => {
+    (e: MouseEvent) => {
+      if (isEqualElement(e.target, e.currentTarget)) return;
       if (entry.clickBackdropToClose) entry.close();
-    }),
+    },
     [entry]
   );
 

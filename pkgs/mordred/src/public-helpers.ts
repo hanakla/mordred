@@ -1,9 +1,6 @@
-import { MouseEvent } from "react";
-
-export const whenExactlyClickThen = (
-  handler: <T extends MouseEvent>(e: T) => void
+export const isEqualElement = (
+  a: HTMLElement | EventTarget,
+  b: HTMLElement | EventTarget
 ) => {
-  return (e: MouseEvent) => {
-    if (e.currentTarget === e.target) handler(e);
-  };
+  return a === b;
 };

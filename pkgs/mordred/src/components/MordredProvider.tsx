@@ -1,9 +1,10 @@
-import { Mordred, MordredEntry } from "../Mordred";
+import { Mordred, MordredEntry, MordredOptions } from "../Mordred";
 import React, {
   Fragment,
   ReactNode,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useReducer,
   useRef,
   useState,
@@ -11,19 +12,23 @@ import React, {
 import { createPortal } from "react-dom";
 import { IS_SERVER } from "../utils";
 
-type MordalRenderer =
-  | ReactNode
-  | ((args: {
-      children: ReactNode;
-      entry: MordredEntry;
-      closeCurrent: () => void;
-    }) => ReactNode);
+type ModalRenderFn = (args: {
+  children: ReactNode;
+  entry: MordredEntry;
+  closeCurrent: () => void;
+}) => ReactNode;
 
-export const MordredRenderer = ({
+export const MordredProvider = ({
   children = ({ children }) => children,
+  allowMultipleModals,
+  disableFocusTrap,
+  rootElement,
+  zIndex,
 }: {
-  children?: MordalRenderer;
-}) => {
+  children?: ModalRenderFn;
+} & MordredOptions) => {
+  const mordredRef = useRef<Mordred | null>(null);
+
   const [mounted, setMounted] = useState(false);
   const [, rerender] = useReducer((s) => s + 1, 0);
   const styleRef = useRef<HTMLStyleElement | null>(null);
@@ -51,9 +56,26 @@ export const MordredRenderer = ({
   useEffect(() => {
     setMounted(true);
 
-    instance.observe(onUpdate);
+    Mordred.init({
+      allowMultipleModals,
+      disableFocusTrap,
+      rootElement,
+      zIndex,
+    });
+
+    mordredRef.current = Mordred.instance;
+    Mordred.instance.observe(onUpdate);
+
     return () => instance.unobserve(onUpdate);
   }, []);
+
+  useLayoutEffect(() => {
+    instance.changeSetting({
+      allowMultipleModals: allowMultipleModals,
+      disableFocusTrap: disableFocusTrap,
+      zIndex: zIndex,
+    });
+  }, [allowMultipleModals, disableFocusTrap, zIndex]);
 
   if (IS_SERVER || !mounted || !instance.rootElement) {
     return <></>;
@@ -76,10 +98,6 @@ export const MordredRenderer = ({
         )}
       </>
     );
-  }
-
-  if (children !== null) {
-    return <>{createPortal(children, instance.rootElement)}</>;
   }
 
   return (

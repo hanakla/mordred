@@ -7,5 +7,5 @@ export {
   useModalsQueue,
 } from "./react-bind";
 export { Modal } from "./components/Modal";
-export { MordredRenderer } from "./components/MordredRenderer";
-export { whenExactlyClickThen } from "./public-helpers";
+export { MordredProvider } from "./components/MordredProvider";
+export { isEqualElement } from "./public-helpers";

@@ -36,7 +36,7 @@ export class MordredEntry {
   }
 }
 
-interface Options {
+export interface MordredOptions {
   rootElement?: HTMLElement;
   zIndex?: number;
   allowMultipleModals?: boolean;
@@ -55,8 +55,8 @@ export class Mordred {
     return Mordred._instance;
   }
 
-  public static init(options: Options = {}) {
-    if (Mordred._instance) throw new Error("Mordred is already initialized");
+  public static init(options: MordredOptions = {}) {
+    if (Mordred._instance) return;
     Mordred._instance = new Mordred(options);
   }
 
@@ -64,10 +64,10 @@ export class Mordred {
   public focusTrap: FocusTrap | null = null;
   private modals: Map<string, MordredEntry> = new Map();
   private activeEntriesCache: MordredEntry[] = [];
-  private options: Options;
+  private options: MordredOptions;
   private observer: Set<() => void> = new Set();
 
-  constructor(options: Options = {}) {
+  constructor(options: MordredOptions = {}) {
     this.options = options;
 
     if (IS_SERVER) return;
@@ -77,18 +77,7 @@ export class Mordred {
     } else {
       const div = (this.rootElement = document.createElement("div"));
       div.className = "mordred-context";
-
-      Object.assign(div.style, {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: options.zIndex ?? Number.MAX_SAFE_INTEGER,
-        display: "block",
-        height: "0",
-        width: "0",
-        overflow: "visible",
-      });
-
+      div.style.display = "contents";
       document.body.appendChild(div);
     }
 
@@ -120,7 +109,7 @@ export class Mordred {
     return entry;
   }
 
-  public changeSetting(option: Partial<Omit<Options, "rootElement">>) {
+  public changeSetting(option: Partial<Omit<MordredOptions, "rootElement">>) {
     this.options.allowMultipleModals = !!option.allowMultipleModals;
     this.options.zIndex = option.zIndex;
 
@@ -132,6 +121,9 @@ export class Mordred {
       this.focusTrap?.deactivate();
       this.focusTrap = null;
     }
+
+    this.options.disableFocusTrap =
+      option.disableFocusTrap ?? this.options.disableFocusTrap;
 
     this.dispatchUpdate();
   }
