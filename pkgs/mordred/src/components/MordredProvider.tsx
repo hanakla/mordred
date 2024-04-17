@@ -28,23 +28,25 @@ export const MordredProvider = ({
   children?: ModalRenderFn;
 } & MordredOptions) => {
   const mordredRef = useRef<Mordred | null>(null);
+  const instance = mordredRef.current;
 
   const [mounted, setMounted] = useState(false);
   const [, rerender] = useReducer((s) => s + 1, 0);
   const styleRef = useRef<HTMLStyleElement | null>(null);
 
-  const { instance } = Mordred;
-  const entries = instance.activeEntries;
+  const activeEntries = instance?.activeEntries ?? [];
 
   const onUpdate = useCallback(() => {
-    if (instance.activeEntries.length > 0 && styleRef.current == null) {
+    if (!instance) return;
+
+    if (activeEntries.length > 0 && styleRef.current == null) {
       const style = (styleRef.current = document.createElement("style"));
       style.textContent = "body { overflow: hidden /* Lock by Mordred */; }";
       document.head.appendChild(style);
       instance.focusTrap?.activate();
     }
 
-    if (instance.activeEntries.length === 0 && styleRef.current != null) {
+    if (activeEntries.length === 0 && styleRef.current != null) {
       styleRef.current.remove();
       styleRef.current = null;
       instance.focusTrap?.deactivate();
@@ -63,21 +65,21 @@ export const MordredProvider = ({
       zIndex,
     });
 
-    mordredRef.current = Mordred.instance;
+    const instance = (mordredRef.current = Mordred.instance);
     Mordred.instance.observe(onUpdate);
 
     return () => instance.unobserve(onUpdate);
   }, []);
 
   useLayoutEffect(() => {
-    instance.changeSetting({
+    instance?.changeSetting({
       allowMultipleModals: allowMultipleModals,
       disableFocusTrap: disableFocusTrap,
       zIndex: zIndex,
     });
   }, [allowMultipleModals, disableFocusTrap, zIndex]);
 
-  if (IS_SERVER || !mounted || !instance.rootElement) {
+  if (IS_SERVER || !mounted || !instance?.rootElement) {
     return <></>;
   }
 
@@ -85,7 +87,7 @@ export const MordredProvider = ({
     return (
       <>
         {createPortal(
-          entries.map((entry) => (
+          activeEntries.map((entry) => (
             <Fragment key={entry.key}>
               {children({
                 children: entry.element,
@@ -104,7 +106,7 @@ export const MordredProvider = ({
     <>
       {createPortal(
         <>
-          {entries.map((entry) => (
+          {activeEntries.map((entry) => (
             <Fragment key={entry.key}>{entry.element}</Fragment>
           ))}
         </>,

@@ -24,7 +24,6 @@ import { Transition, animated } from "react-spring/renderprops";
 const TestContext = createContext<string>("");
 
 domready(() => {
-  Mordred.init();
   ReactDOM.render(<App />, document.getElementById("root"));
 });
 
