@@ -56,9 +56,7 @@ And define and call ModalComponet to use it up!
 import { useModalOpener } from "@fleur/mordred";
 
 const SomePage = () => {
-  const [isOpened, setIsOpen] = useState(false);
   const { openModal } = useModalOpener();
-  const handleClose = (result) => console.log(result);
 
   const handleClickGotoSleep = useCallback(() => {
     // call your modal here
@@ -93,3 +91,5 @@ import { unrecommended_openModal } from "@fleur/mordred";
 
 const result = await openModal(ConfirmModal, { message: "Godmode?" });
 ```
+
+More details if you want, please see [`example`](https://github.com/fleur-js/mordred/tree/main/pkgs/example)
