@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import {
   ModalComponentType,
   PropsTypeOf,
-  ModalPropsBase,
+  ModalProps,
   ResultOfModal,
 } from "../react-bind";
 import { ModalManager, ModalEntry } from "../ModalManager";
@@ -10,13 +10,13 @@ import { usePrevious } from "../utils";
 
 export const Modal = <
   C extends ModalComponentType<any, any>,
-  ExtraProps extends Omit<PropsTypeOf<C>, keyof ModalPropsBase>
+  ExtraProps extends Omit<PropsTypeOf<C>, keyof ModalProps>
 >({
   component,
   props,
   clickBackdropToClose = true,
   ...rest
-}: ModalPropsBase<
+}: ModalProps<
   {
     component: C;
     props: ExtraProps;
@@ -52,7 +52,7 @@ export const Modal = <
         {...(props as ExtraProps)}
         isOpen={rest.isOpen}
         clickBackdropToClose={clickBackdropToClose}
-        onClose={handleClose as ModalPropsBase["onClose"]}
+        onClose={handleClose as ModalProps["onClose"]}
       />
     );
 

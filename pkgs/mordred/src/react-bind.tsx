@@ -10,13 +10,13 @@ import React, {
 import { ModalManager } from "./ModalManager";
 import { IS_SERVER } from "./utils";
 
-export type ModalPropsBase<Props = unknown, T = any> = {
+export type ModalProps<Props = unknown, T = any> = {
   clickBackdropToClose?: boolean;
   onClose: [T] extends [void] ? () => void : (result?: T) => void;
 } & Props;
 
 export type ModalComponentType<Props, Result = void> = ComponentType<
-  ModalPropsBase<Props, Result>
+  ModalProps<Props, Result>
 >;
 
 // prettier-ignore

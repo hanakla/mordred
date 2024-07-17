@@ -5,6 +5,7 @@ export {
   unrecommended_openModal,
   useModalOpener,
   useModalsQueue,
+  type ModalProps,
 } from "./react-bind";
 export { Modal } from "./components/Modal";
 export { MordredOut } from "./components/MordredOut";
