@@ -61,6 +61,9 @@ const SomePage = () => {
   const handleClickGotoSleep = useCallback(() => {
     // call your modal here
     const result = await openModal(ConfirmModal, { message: "Sleep?" });
+
+    // Modal can be abort, and auto unmounting if callee component unmounted.
+    // const result = await openModal(ConfirmModal, { message: "Sleep?" }, { signal });
   }, []);
 
   return (
