@@ -2,7 +2,7 @@ import { createFocusTrap, FocusTrap } from "focus-trap";
 import { ReactNode } from "react";
 import { createKey, IS_SERVER } from "./utils";
 
-export type MordredEntryOption = {
+export type ModalEntryOption = {
   key?: string;
   element: ReactNode;
   clickBackdropToClose?: boolean;
@@ -12,7 +12,7 @@ export type MordredEntryOption = {
 export class ModalEntry {
   constructor(
     public readonly key: string,
-    private options: MordredEntryOption,
+    private options: ModalEntryOption,
     private updated: () => void,
     private destroyed: (entry: ModalEntry) => void
   ) {}
@@ -25,7 +25,7 @@ export class ModalEntry {
     return !!this.options.clickBackdropToClose;
   }
 
-  public update(options: Partial<MordredEntryOption>) {
+  public update(options: Partial<ModalEntryOption>) {
     Object.assign(this.options, options);
     this.updated();
   }
@@ -92,7 +92,7 @@ export class ModalManager {
     this.focusTrap?.deactivate();
   }
 
-  public openModal(option: Omit<MordredEntryOption, "key">) {
+  public openModal(option: Omit<ModalEntryOption, "key">) {
     if (IS_SERVER) {
       throw new Error(
         "Mordred: Can't open modal in Server side, please move openModal inside useEffect or componentDidMount"
