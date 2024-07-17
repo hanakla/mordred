@@ -1,15 +1,23 @@
 import domready from "domready";
-import React, { createContext, useCallback, useContext, useState } from "react";
-import ReactDOM from "react-dom";
+import React, {
+  MouseEvent,
+  PropsWithChildren,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
+import { createRoot } from "react-dom/client";
 import {
-  Mordred,
-  MordredEntry,
+  ModalManager,
+  ModalEntry,
   Modal,
   ModalComponentType,
   ResultOfModal,
-  openModal,
-  whenExactlyClickThen,
-  MordredRenderer,
+  unrecommended_openModal,
+  MordredOut,
+  isEqualElement,
 } from "@fleur/mordred";
 import dedent from "dedent";
 import { useModalsQueue } from "@fleur/mordred";
@@ -18,13 +26,12 @@ import { Transition, animated } from "react-spring/renderprops";
 const TestContext = createContext<string>("");
 
 domready(() => {
-  Mordred.init();
-  ReactDOM.render(<App />, document.getElementById("root"));
+  createRoot(document.getElementById("root")!).render(<App />);
 });
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { modalEntries, hasModal } = useModalsQueue();
+  const { hasModal } = useModalsQueue();
 
   const handleClickOpenJsxModal = useCallback(() => {
     setIsOpen(true);
@@ -32,7 +39,7 @@ const App = () => {
 
   const handleClose = useCallback(
     (result: ResultOfModal<typeof ConfirmModal>) => {
-      openModal(AlertModal, {
+      unrecommended_openModal(AlertModal, {
         message: `Result is ${result}`,
         clickBackdropToClose: true,
       });
@@ -42,19 +49,19 @@ const App = () => {
   );
 
   const handleClickOpenMultiple = useCallback(() => {
-    Mordred.instance.changeSetting({ allowMultipleModals: true });
+    ModalManager.instance.changeSetting({ allowMultipleModals: true });
 
-    openModal(AlertModal, { message: "1" });
-    openModal(AlertModal, { message: "2" });
-    openModal(AlertModal, { message: "3" });
+    unrecommended_openModal(AlertModal, { message: "1" });
+    unrecommended_openModal(AlertModal, { message: "2" });
+    unrecommended_openModal(AlertModal, { message: "3" });
   }, []);
 
   const handleClickOpenMultipleEach = useCallback(() => {
-    Mordred.instance.changeSetting({ allowMultipleModals: false });
+    ModalManager.instance.changeSetting({ allowMultipleModals: false });
 
-    openModal(AlertModal, { message: "1" });
-    openModal(AlertModal, { message: "2" });
-    openModal(AlertModal, { message: "3" });
+    unrecommended_openModal(AlertModal, { message: "1" });
+    unrecommended_openModal(AlertModal, { message: "2" });
+    unrecommended_openModal(AlertModal, { message: "3" });
   }, []);
 
   return (
@@ -98,7 +105,7 @@ const App = () => {
         </div>
         <Code>
           {dedent`
-            Mordred.instance.changeSetting({ allowMultipleModals: true });
+            ModalManager.instance.changeSetting({ allowMultipleModals: true });
 
             openModal(AlertModal, { message: "1" });
             openModal(AlertModal, { message: "2" });
@@ -113,7 +120,7 @@ const App = () => {
         </div>
         <Code>
           {dedent`
-            Mordred.instance.changeSetting({ allowMultipleModals: false });
+            ModalManager.instance.changeSetting({ allowMultipleModals: false });
 
             openModal(AlertModal, { message: "1" });
             openModal(AlertModal, { message: "2" });
@@ -131,24 +138,24 @@ const App = () => {
 
         <div style={{ width: "100%", height: "40em" }} />
 
-        <MordredRenderer>
-          <Transition
-            items={hasModal}
-            native
-            from={{ opacity: 0 }}
-            enter={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
-          >
-            {(has) => (props) =>
-              has && (
-                <Backdrop style={props}>
-                  {modalEntries.map((entry) => (
-                    <BackdropClickHandle key={entry.key} entry={entry} />
-                  ))}
-                </Backdrop>
-              )}
-          </Transition>
-        </MordredRenderer>
+        <MordredOut>
+          {({ entry }) => (
+            <Transition
+              items={hasModal}
+              native
+              from={{ opacity: 0 }}
+              enter={{ opacity: 1 }}
+              leave={{ opacity: 0 }}
+            >
+              {(has) => (props) =>
+                has && (
+                  <Backdrop style={props}>
+                    <BackdropClickHandle entry={entry} />
+                  </Backdrop>
+                )}
+            </Transition>
+          )}
+        </MordredOut>
       </div>
     </TestContext.Provider>
   );
@@ -156,6 +163,7 @@ const App = () => {
 
 const Backdrop: React.FC<{
   style: any;
+  children: ReactNode;
 }> = ({ style, children }) => {
   return (
     <animated.div
@@ -175,11 +183,12 @@ const Backdrop: React.FC<{
   );
 };
 
-const BackdropClickHandle = ({ entry }: { entry: MordredEntry }) => {
+const BackdropClickHandle = ({ entry }: { entry: ModalEntry }) => {
   const handleClick = useCallback(
-    whenExactlyClickThen(() => {
+    (e: MouseEvent) => {
+      if (isEqualElement(e.target, e.currentTarget)) return;
       if (entry.clickBackdropToClose) entry.close();
-    }),
+    },
     [entry]
   );
 
@@ -228,7 +237,7 @@ const AlertModal: ModalComponentType<{ message: string }, void> = ({
   );
 };
 
-const ModalBase: React.FC = ({ children }) => {
+const ModalBase: React.FC = ({ children }: PropsWithChildren<{}>) => {
   return (
     <div
       style={{
@@ -243,7 +252,10 @@ const ModalBase: React.FC = ({ children }) => {
   );
 };
 
-const Button: React.FC<{ onClick: () => void }> = ({ children, onClick }) => {
+const Button: React.FC<PropsWithChildren<{ onClick: () => void }>> = ({
+  children,
+  onClick,
+}) => {
   return (
     <button
       onClick={onClick}
@@ -264,7 +276,7 @@ const Button: React.FC<{ onClick: () => void }> = ({ children, onClick }) => {
   );
 };
 
-const Code: React.FC = ({ children }) => (
+const Code: React.FC<PropsWithChildren<{}>> = ({ children }) => (
   <pre
     style={{
       marginBottom: "32px",

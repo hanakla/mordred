@@ -9,19 +9,22 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [18.x, 20.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js for use with actions
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: corepack enable yarn
+
       - name: Cache
-        uses: actions/cache@v1.0.0
+        uses: actions/cache@v4
         with:
+          save-always: true
           path: ~/.cache/yarn
           key: ${{ matrix.os }}-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
           restore-keys: |
@@ -30,7 +33,9 @@ jobs:
       - name: Install deps
         run: yarn install
 
+      - name: Lint
+        run: yarn eslint "pkgs/mordred/src/**/*.{ts,tsx}"
+
       - name: Building @fluer/mordred
-        run: |
-          yarn eslint
-          yarn prepublishOnly
+        working-directory: pkgs/mordred
+        run: yarn prepublishOnly
