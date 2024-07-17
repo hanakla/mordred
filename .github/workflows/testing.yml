@@ -34,6 +34,7 @@ jobs:
         run: yarn install
 
       - name: Building @fluer/mordred
+        working-directory: pkgs/mordred
         run: |
           yarn eslint
           yarn prepublishOnly
