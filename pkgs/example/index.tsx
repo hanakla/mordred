@@ -9,7 +9,7 @@ import React, {
 import ReactDOM from "react-dom";
 import {
   ModalManager,
-  MordredEntry,
+  ModalEntry,
   Modal,
   ModalComponentType,
   ResultOfModal,
@@ -137,22 +137,24 @@ const App = () => {
         <div style={{ width: "100%", height: "40em" }} />
 
         <MordredOut>
-          <Transition
-            items={hasModal}
-            native
-            from={{ opacity: 0 }}
-            enter={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
-          >
-            {(has) => (props) =>
-              has && (
-                <Backdrop style={props}>
-                  {modalEntries.map((entry) => (
-                    <BackdropClickHandle key={entry.key} entry={entry} />
-                  ))}
-                </Backdrop>
-              )}
-          </Transition>
+          {({ children }) => (
+            <Transition
+              items={hasModal}
+              native
+              from={{ opacity: 0 }}
+              enter={{ opacity: 1 }}
+              leave={{ opacity: 0 }}
+            >
+              {(has) => (props) =>
+                has && (
+                  <Backdrop style={props}>
+                    {modalEntries.map((entry) => (
+                      <BackdropClickHandle key={entry.key} entry={entry} />
+                    ))}
+                  </Backdrop>
+                )}
+            </Transition>
+          )}
         </MordredOut>
       </div>
     </TestContext.Provider>
@@ -180,7 +182,7 @@ const Backdrop: React.FC<{
   );
 };
 
-const BackdropClickHandle = ({ entry }: { entry: MordredEntry }) => {
+const BackdropClickHandle = ({ entry }: { entry: ModalEntry }) => {
   const handleClick = useCallback(
     (e: MouseEvent) => {
       if (isEqualElement(e.target, e.currentTarget)) return;

@@ -1,4 +1,4 @@
-export { ModalManager, ModalEntry as MordredEntry } from "./ModalManager";
+export { ModalManager, ModalEntry } from "./ModalManager";
 export {
   ResultOfModal,
   ModalComponentType,
