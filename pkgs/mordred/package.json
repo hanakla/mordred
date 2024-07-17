@@ -1,6 +1,6 @@
 {
   "name": "@fleur/mordred",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.1",
   "description": "Perfect React Modal library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

@@ -53,6 +53,8 @@ And define and call ModalComponet to use it up!
 
 ```tsx
 // In your page
+import { useModalOpener } from "@fleur/mordred";
+
 const SomePage = () => {
   const [isOpened, setIsOpen] = useState(false);
   const { openModal } = useModalOpener();
@@ -72,9 +74,7 @@ const SomePage = () => {
 
 // Modal component definition
 import {
-  MordredRenderer,
-  ModalComponentType,
-  useModalOpener,
+  type ModalComponentType /* or using `ModalProps` */,
 } from "@fleur/mordred";
 
 // jsx style
