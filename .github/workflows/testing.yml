@@ -33,8 +33,9 @@ jobs:
       - name: Install deps
         run: yarn install
 
+      - name: Lint
+        run: yarn eslint "pkgs/mordred/src/**/*.{ts,tsx}"
+
       - name: Building @fluer/mordred
         working-directory: pkgs/mordred
-        run: |
-          yarn eslint
-          yarn prepublishOnly
+        run: yarn prepublishOnly
