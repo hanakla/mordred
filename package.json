@@ -6,7 +6,7 @@
   "repository": "git@github.com:fleur-js/mordred.git",
   "author": "Hanakla <hanakla.dev@gmail.com>",
   "license": "MIT",
-  "packageManager": "yarn@4.0.0",
+  "packageManager": "yarn@4.1.1",
   "workspaces": [
     "pkgs/*"
   ],
