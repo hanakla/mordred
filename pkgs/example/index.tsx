@@ -1,12 +1,14 @@
 import domready from "domready";
 import React, {
   MouseEvent,
+  PropsWithChildren,
+  ReactNode,
   createContext,
   useCallback,
   useContext,
   useState,
 } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import {
   ModalManager,
   ModalEntry,
@@ -24,12 +26,12 @@ import { Transition, animated } from "react-spring/renderprops";
 const TestContext = createContext<string>("");
 
 domready(() => {
-  ReactDOM.render(<App />, document.getElementById("root"));
+  createRoot(document.getElementById("root")!).render(<App />);
 });
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { modalEntries, hasModal } = useModalsQueue();
+  const { hasModal } = useModalsQueue();
 
   const handleClickOpenJsxModal = useCallback(() => {
     setIsOpen(true);
@@ -137,7 +139,7 @@ const App = () => {
         <div style={{ width: "100%", height: "40em" }} />
 
         <MordredOut>
-          {({ children }) => (
+          {({ entry }) => (
             <Transition
               items={hasModal}
               native
@@ -148,9 +150,7 @@ const App = () => {
               {(has) => (props) =>
                 has && (
                   <Backdrop style={props}>
-                    {modalEntries.map((entry) => (
-                      <BackdropClickHandle key={entry.key} entry={entry} />
-                    ))}
+                    <BackdropClickHandle entry={entry} />
                   </Backdrop>
                 )}
             </Transition>
@@ -163,6 +163,7 @@ const App = () => {
 
 const Backdrop: React.FC<{
   style: any;
+  children: ReactNode;
 }> = ({ style, children }) => {
   return (
     <animated.div
@@ -236,7 +237,7 @@ const AlertModal: ModalComponentType<{ message: string }, void> = ({
   );
 };
 
-const ModalBase: React.FC = ({ children }) => {
+const ModalBase: React.FC = ({ children }: PropsWithChildren<{}>) => {
   return (
     <div
       style={{
@@ -251,7 +252,10 @@ const ModalBase: React.FC = ({ children }) => {
   );
 };
 
-const Button: React.FC<{ onClick: () => void }> = ({ children, onClick }) => {
+const Button: React.FC<PropsWithChildren<{ onClick: () => void }>> = ({
+  children,
+  onClick,
+}) => {
   return (
     <button
       onClick={onClick}
@@ -272,7 +276,7 @@ const Button: React.FC<{ onClick: () => void }> = ({ children, onClick }) => {
   );
 };
 
-const Code: React.FC = ({ children }) => (
+const Code: React.FC<PropsWithChildren<{}>> = ({ children }) => (
   <pre
     style={{
       marginBottom: "32px",

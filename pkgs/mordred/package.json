@@ -1,6 +1,6 @@
 {
   "name": "@fleur/mordred",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "description": "Perfect React Modal library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -20,11 +20,11 @@
   },
   "devDependencies": {
     "@types/domready": "^1.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "bili": "^5.0.5",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rollup-plugin-typescript2": "^0.29.0"
   },
   "peerDependencies": {
