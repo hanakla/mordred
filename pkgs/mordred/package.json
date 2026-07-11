@@ -1,13 +1,17 @@
 {
   "name": "@fleur/mordred",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Perfect React Modal library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "jsdelivr": "dist/index.umd.min.js",
   "unpkg": "dist/index.umd.min.js",
-  "repository": "https://github.com/fleur-js/mordred",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hanakla/mordred",
+    "directory": "pkgs/mordred"
+  },
   "author": "Hanakla <hanakla.dev@gmail.com>",
   "license": "MIT",
   "scripts": {
