@@ -21,7 +21,7 @@ import {
 } from "@fleur/mordred";
 import dedent from "dedent";
 import { useModalsQueue } from "@fleur/mordred";
-import { Transition, animated } from "react-spring/renderprops";
+import { Transition, animated } from "@react-spring/web";
 
 const TestContext = createContext<string>("");
 
@@ -142,17 +142,17 @@ const App = () => {
           {({ entry }) => (
             <Transition
               items={hasModal}
-              native
               from={{ opacity: 0 }}
               enter={{ opacity: 1 }}
               leave={{ opacity: 0 }}
             >
-              {(has) => (props) =>
+              {(style, has) =>
                 has && (
-                  <Backdrop style={props}>
+                  <Backdrop style={style}>
                     <BackdropClickHandle entry={entry} />
                   </Backdrop>
-                )}
+                )
+              }
             </Transition>
           )}
         </MordredOut>
@@ -237,7 +237,7 @@ const AlertModal: ModalComponentType<{ message: string }, void> = ({
   );
 };
 
-const ModalBase: React.FC = ({ children }: PropsWithChildren<{}>) => {
+const ModalBase: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   return (
     <div
       style={{

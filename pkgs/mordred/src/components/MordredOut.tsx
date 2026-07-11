@@ -102,19 +102,6 @@ export const MordredOut = ({
     );
   }
 
-  if (children) {
-    return (
-      <>
-        {createPortal(
-          activeEntries.map((entry) => (
-            <Fragment key={entry.key}>{children}</Fragment>
-          )),
-          instance.rootElement
-        )}
-      </>
-    );
-  }
-
   return (
     <>
       {createPortal(
