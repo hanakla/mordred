@@ -1,0 +1,39 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pkgs/mordred/package.json"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js for use with actions
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - run: corepack enable yarn
+
+      - name: Install deps
+        run: yarn install
+
+      - name: Build
+        working-directory: pkgs/mordred
+        run: yarn prepublishOnly
+
+      - name: Publish
+        uses: JS-DevTools/npm-publish@v4
+        with:
+          package: pkgs/mordred/package.json
+          access: public
+          strategy: upgrade
